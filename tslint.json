@@ -5,6 +5,7 @@
     "no-implicit-dependencies": false,
     "no-submodule-imports": false,
     "no-unused-expression": true,
-    "object-literal-sort-keys": false
+    "object-literal-sort-keys": false,
+    "no-console":false
   }
 }
