@@ -1,0 +1,10 @@
+{
+  "extends": "tslint:latest",
+  "rules": {
+    "member-ordering": false,
+    "no-implicit-dependencies": false,
+    "no-submodule-imports": false,
+    "no-unused-expression": true,
+    "object-literal-sort-keys": false
+  }
+}
