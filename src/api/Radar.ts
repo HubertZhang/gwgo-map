@@ -1,23 +1,8 @@
-function abc1(e) {
-    const n = new ArrayBuffer(2 * e.length);
-    const r = new Uint16Array(n);
-    for (let t = 0; t < e.length; t++) { r[t] = e.charCodeAt(t); }
-    return r;
-}
+import { getRandomInt, jsonToPayload } from "./util";
 
-function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-}
-
-function json2buffer(n) {
-    const r = abc1(JSON.stringify(n));
-    const t = r.length;
-    const o = new ArrayBuffer(4);
-    new DataView(o).setUint32(0, t);
-    const s = new Uint8Array(4 + t);
-    s.set(new Uint8Array(o), 0);
-    s.set(r, 4);
-    return s.buffer;
+interface IWSRequest {
+    request_type: string;
+    requestid: number;
 }
 
 interface IWSResponse {
@@ -30,12 +15,22 @@ interface ISpriteResponse extends IWSResponse {
     sprite_list: [ISpriteLocation];
 }
 
+interface IDojoResponse extends IWSResponse {
+    dojo_list: [IDojoLocation];
+}
+
 interface ISpriteLocation {
     gentime: number;
     latitude: number;
     lifetime: number;
     longtitude: number;
     sprite_id: number;
+}
+
+interface IDojoLocation {
+    latitude: number;
+    longtitude: number;
+    state: number;
 }
 
 interface IRadarConfig {
@@ -68,21 +63,21 @@ class Radar {
         this.connection.onmessage = this._onSocketMessage.bind(this);
     }
 
-    public _onSocketOpen(event) {
+    public _onSocketOpen(event: any) {
         console.log("Connection open ...");
         if (this.pendingRequestData.length > 0) {
             for (const data of this.pendingRequestData) {
-                this.connection.send(json2buffer(data));
+                this.connection.send(jsonToPayload(data));
             }
             this.pendingRequestData = [];
         }
     }
 
-    public _onSocketError(event) {
+    public _onSocketError(event: any) {
         console.log("Connection encountered error:", event);
     }
 
-    public _onSocketClose(event) {
+    public _onSocketClose(event: any) {
         console.log("Connection closed");
         this.initSocket();
 
@@ -111,21 +106,21 @@ class Radar {
         }
     }
 
-    public async sendMessage(request) {
+    public async sendMessage(request: any & IWSRequest) {
         const requestID = Radar._generateRequestID();
-        let outerResolve;
-        let outerReject;
+        let outerResolve: (value?: {} | PromiseLike<{}>) => void;
+        let outerReject: (reason?: any) => void;
         const p = new Promise((resolve, reject) => {
             outerResolve = resolve;
             outerReject = reject;
         });
         this.requestResolvers.set(requestID, outerResolve);
         this.requestRejectors.set(requestID, outerReject);
-        setTimeout((radar, id) => {
-            if (radar._requestResolvers.has(id)) {
-                radar._requestRejectors.get(id)("timeout");
-                radar._requestResolvers.delete(id);
-                radar._requestRejectors.delete(id);
+        setTimeout((radar: Radar, id) => {
+            if (radar.requestResolvers.has(id)) {
+                radar.requestRejectors.get(id)("timeout");
+                radar.requestResolvers.delete(id);
+                radar.requestRejectors.delete(id);
             }
         }, 1000, this, requestID);
         const newRequest = request;
@@ -136,7 +131,7 @@ class Radar {
             return p;
         }
 
-        this.connection.send(json2buffer(newRequest));
+        this.connection.send(jsonToPayload(newRequest));
         return p;
     }
 
@@ -149,13 +144,13 @@ class Radar {
             if (!config.filename) {
                 throw new Error("no config");
             }
-            return fetch("https://hy.gwgo.qq.com/sync/pet/config/" + config.filename, {mode: "no-cors"});
+            return fetch("https://hy.gwgo.qq.com/sync/pet/config/" + config.filename, { mode: "no-cors" });
         }).then((r: Response) => {
             return r.text();
         }).then(JSON.parse);
     }
 
-    public async fetchYaolings(lat, lng): Promise<ISpriteResponse> {
+    public async fetchYaolings(lat: number, lng: number): Promise<ISpriteResponse> {
         return this.sendMessage({
             request_type: "1001",
             longtitude: Math.round(lng * 1E6),
@@ -163,8 +158,17 @@ class Radar {
             platform: 0,
         }).then((res) => (res as ISpriteResponse));
     }
+
+    public async fetchDojos(lat: number, lng: number): Promise<IDojoResponse> {
+        return this.sendMessage({
+            request_type: "1002",
+            longtitude: Math.round(lng * 1E6),
+            latitude: Math.round(lat * 1E6),
+            platform: 0,
+        }).then((res) => (res as IDojoResponse));
+    }
 }
 
-export {ISpriteResponse as SpriteResponse, IWSResponse as WSResponse, ISpriteLocation as SpriteLocation};
+export { ISpriteResponse as SpriteResponse, IWSResponse as WSResponse, ISpriteLocation as SpriteLocation };
 
 export default Radar;
