@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "./build1",
     "sourceMap": true,
     "noImplicitAny": false,
     "module": "commonjs",
@@ -17,16 +16,25 @@
     "allowSyntheticDefaultImports": false,
     "jsx": "react",
     "allowJs": true,
-    "baseUrl": "./src",
+    "baseUrl": "src",
     "paths": {
-      "components/*": [
-        "components/*"
+      "*": [
+        "types/*"
       ],
-      "@api": [
-        "api"
+      "@components/*": [
+        "components/*"
       ],
       "@api/*": [
         "api/*"
+      ],
+      "@reducer/*": [
+        "reducer/*"
+      ],
+      "@action/*": [
+        "action/*"
+      ],
+      "@config/*": [
+        "config/*"
       ]
     }
   }
