@@ -1,38 +1,31 @@
-import Radar, { SpriteLocation, SpriteResponse } from "@api/Radar";
-import { filterYaoling, SpriteConfig } from "@api/SpriteData";
-import { icon } from "leaflet";
 import * as React from "react";
-import { LayerGroup, LayersControl, Map as MapNode, Marker, TileLayer } from "react-leaflet";
-import "./App.css";
+import { LayerGroup, LayersControl, Map as MapNode, TileLayer } from "react-leaflet";
+import { connect, DispatchProp } from "react-redux";
+
+import Radar, { SpriteLocation, SpriteResponse } from "@api/Radar";
+import { IAppState } from "@reducer/global";
+
+import * as style from "./App.scss";
+import { SpriteMarker } from "./Marker/SpriteMarker";
+import Dialog from "./Shared/Dialog/Dialog";
+import MapControlComponent from "./Shared/MapControlComponent";
+import YaolingFilterList from "./YaolingFilter/YaolingFilterList";
 
 const { BaseLayer, Overlay } = LayersControl;
 
-const Prefix = "https://hy.gwgo.qq.com/sync/pet/";
+const defaultPosition: [number, number] = [31.193946708086784, 121.28305301070213];
 
-const SpriteMarker = ({ sprite: sprite }) => (
-    <Marker position={{ lat: sprite.latitude / 1e6, lng: sprite.longtitude / 1e6 }}
-        icon={icon({
-            iconUrl: Prefix + SpriteConfig.get(sprite.sprite_id).SmallImgPath,
-            iconSize: [32, 32],
-        })}>
-    </Marker>
+type IProps = (
+    DispatchProp &
+    ReturnType<typeof mapStateToProps>
 );
 
-const defaultPosition: [number, number] = [31.193946708086784, 121.28305301070213];
-// class MyMarkersList extends React.Component<{ markers: Array<SpriteLocation> }> {
-//     render() {
-//         let {markers} = this.props;
-//         const items = markers.map((sprite: SpriteLocation) => (
-//
-//             <SpriteMarker key={sprite.gentime + "_" + sprite.latitude + "_" + sprite.longtitude} sprite={sprite}/>
-//         ));
-//         return <React.Fragment>{items}</React.Fragment>
-//     }
-// }
-
-class App extends React.Component {
+class App extends React.Component<IProps> {
     private radar: Radar;
-    private configData: Map<number, any>;
+
+    constructor(props) {
+        super(props);
+    }
 
     public componentDidMount(): void {
         this.radar = new Radar();
@@ -55,6 +48,7 @@ class App extends React.Component {
         lng: defaultPosition[1],
         zoom: 12,
         sprites: [],
+        showFilterDialog: false,
     };
 
     public componentDidUpdate(prevProps, prevState) {
@@ -79,7 +73,18 @@ class App extends React.Component {
             return;
         }
         this.radar.fetchYaolings(this.state.lat, this.state.lng).then((res: SpriteResponse) => {
-            console.log(res.sprite_list);
+            // let minLat = Number.MAX_VALUE;
+            // let maxLat = 0;
+            // let minLng = Number.MAX_VALUE;
+            // let maxLng = 0;
+            // for (const s of res.sprite_list) {
+            //     minLat = Math.min(minLat, s.latitude);
+            //     maxLat = Math.max(maxLat, s.latitude);
+            //     minLng = Math.min(minLng, s.longtitude);
+            //     maxLng = Math.max(maxLng, s.longtitude);
+            // }
+            // console.log(maxLat - this.state.lat * 1e6, this.state.lat * 1e6 - minLat);
+            // console.log(maxLng - this.state.lng * 1e6, this.state.lng * 1e6 - minLng);
             if (res.sprite_list) {
                 this.setState(() => {
                     return {
@@ -93,39 +98,39 @@ class App extends React.Component {
     }
 
     public render() {
-        // let orderMap = new Map<number, number>();
-        // let sprite_groups: [[SpriteLocation]] = this.state.sprites.
-        // reduce((dic: [[SpriteLocation]], sprite: SpriteLocation) => {
-        //     if (orderMap.has(sprite.sprite_id)) {
-        //         dic[orderMap.get(sprite.sprite_id)].push(sprite);
-        //     } else {
-        //         orderMap.set(sprite.sprite_id, dic.length);
-        //         dic.push([sprite]);
-        //     }
-        //     return dic;
-        // }, []);
-        // console.log(sprite_groups);
-
         return (
-            <MapNode center={defaultPosition}
+            <MapNode className={style.map}
+                center={defaultPosition}
                 zoom={12}
                 onViewportChanged={this.onViewportChanged}
                 onClick={this.forceRequest}
             >
-                {/*<MapControl createLeafletElement={} updateLeafletElement={}></MapControl>*/}
+                <Dialog title={"选择显示的妖灵"} hidden={!this.state.showFilterDialog}
+                    onClosed={() => { this.setState({ showFilterDialog: false }); }}>
+                    <YaolingFilterList></YaolingFilterList>
+                </Dialog>
+                <MapControlComponent id={style["yaoling-filter-button"]} position={"bottomleft"}>
+                    <a onClick={() => { this.setState({ showFilterDialog: true }); }}>Test</a>
+                </MapControlComponent>
                 <LayersControl position={"topright"}>
                     <BaseLayer checked name={"Base map"}>
                         <TileLayer
                             url={"http://rt{s}.map.gtimg.com/realtimerender?z={z}&x={x}&y={y}&type=vector&style=0"}
                             subdomains={"0123"} tms={true} minZoom={3} />
                     </BaseLayer>
+                    {/* <Overlay checked name={"Debug"}>
+                        <Rectangle bounds={[[this.state.lat - 0.008, this.state.lng - 0.01],
+                             [this.state.lat + 0.008, this.state.lng + 0.009]]} color="black" />
+                    </Overlay> */}
                     <Overlay checked name={"妖灵"}>
                         <LayerGroup>
-                            {this.state.sprites.filter(filterYaoling).map((sprite: SpriteLocation) => (
-                                <SpriteMarker
-                                    key={sprite.gentime + "_" + sprite.latitude + "_" + sprite.longtitude}
-                                    sprite={sprite} />
-                            ))}
+                            {this.state.sprites
+                                .filter((sprite) => this.props.selected.has(sprite.sprite_id))
+                                .map((sprite: SpriteLocation) => (
+                                    <SpriteMarker
+                                        key={sprite.gentime + "_" + sprite.latitude + "_" + sprite.longtitude}
+                                        sprite={sprite} />
+                                ))}
                         </LayerGroup>
                     </Overlay>
                     <Overlay name={"神石"}>
@@ -146,20 +151,14 @@ class App extends React.Component {
                             {/*))}*/}
                         </LayerGroup>
                     </Overlay>
-                    {/*{*/}
-
-                    {/*    sprite_groups.map((group) => (*/}
-
-// tslint:disable-next-line: max-line-length
-                    {/*        <Overlay key={group[0].sprite_id.toString()} checked name={SpriteConfig.get(group[0].sprite_id).Name}>*/}
-                    {/*            */}
-                    {/*        </Overlay>)*/}
-                    {/*    )*/}
-                    {/*}*/}
                 </LayersControl>
             </MapNode>
         );
     }
 }
 
-export default App;
+const mapStateToProps = (state: IAppState) => ({
+    selected: state.yaolingFilter.ids,
+});
+
+export default connect(mapStateToProps)(App);
