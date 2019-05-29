@@ -1,0 +1,29 @@
+.popup {
+    display: flex;
+    flex-direction: column;
+    .owner {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .owner-name {
+            
+        }
+        .owner-power {
+            margin-left: 8px;
+        }
+    }
+    .sprites {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        img {
+            width: 40px;
+        }
+        figure {
+            margin: 0;
+        }
+        figcaption {
+            text-align: center;
+        }
+    }
+}

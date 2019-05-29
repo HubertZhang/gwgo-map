@@ -25,6 +25,7 @@ const config: webpack.Configuration = {
                 loader: "awesome-typescript-loader",
             },
             { test: /\.svg$/, use: require.resolve("svg-url-loader") },
+            { test: /\.png$/, use: require.resolve("file-loader") },
         ],
     },
     plugins: [
