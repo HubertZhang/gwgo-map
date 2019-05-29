@@ -1,5 +1,5 @@
 import * as React from "react";
-import { LayerGroup, LayersControl, Map as MapNode, TileLayer } from "react-leaflet";
+import { LayerGroup, LayersControl, Map as MapNode, TileLayer, AttributionControl } from "react-leaflet";
 import { connect, DispatchProp } from "react-redux";
 
 import Radar, { SpriteLocation, SpriteResponse } from "@api/Radar";
@@ -9,6 +9,7 @@ import * as style from "./App.scss";
 import { SpriteMarker } from "./Marker/SpriteMarker";
 import Dialog from "./Shared/Dialog/Dialog";
 import MapControlComponent from "./Shared/MapControlComponent";
+import { ToastMessages } from "./Toast/ToastMessages";
 import YaolingFilterList from "./YaolingFilter/YaolingFilterList";
 
 const { BaseLayer, Overlay } = LayersControl;
@@ -30,6 +31,9 @@ class App extends React.Component<IProps> {
     public componentDidMount(): void {
         this.radar = new Radar();
         // this.refreshConfig()
+        if (this.mapRef.current) {
+            this.mapRef.current.leafletElement.on("click", this.forceRequest);
+        }
     }
 
     public refreshConfig = () => {
@@ -41,7 +45,7 @@ class App extends React.Component<IProps> {
     }
 
     public mapRef = React.createRef<MapNode>();
-    public controlRef = React.createRef<LayersControl>();
+    public toast = React.createRef<ToastMessages>();
 
     public state = {
         lat: defaultPosition[0],
@@ -93,25 +97,27 @@ class App extends React.Component<IProps> {
                 });
             }
 
-        },
-        ).catch(console.log);
+        }).catch((e) => {
+            console.log(e);
+            this.toast.current.addToast(e);
+        });
     }
 
     public render() {
         return (
             <MapNode className={style.map}
+                ref={this.mapRef}
                 center={defaultPosition}
                 zoom={12}
                 onViewportChanged={this.onViewportChanged}
-                onClick={this.forceRequest}
+                attributionControl={false}
+            // onClick={this.forceRequest}
             >
+                <ToastMessages ref={this.toast}></ToastMessages>
                 <Dialog title={"选择显示的妖灵"} hidden={!this.state.showFilterDialog}
                     onClosed={() => { this.setState({ showFilterDialog: false }); }}>
                     <YaolingFilterList></YaolingFilterList>
                 </Dialog>
-                <MapControlComponent id={style["yaoling-filter-button"]} position={"bottomleft"}>
-                    <a onClick={() => { this.setState({ showFilterDialog: true }); }}>Test</a>
-                </MapControlComponent>
                 <LayersControl position={"topright"}>
                     <BaseLayer checked name={"Base map"}>
                         <TileLayer
@@ -152,6 +158,20 @@ class App extends React.Component<IProps> {
                         </LayerGroup>
                     </Overlay>
                 </LayersControl>
+                <MapControlComponent id={style["yaoling-filter-button"]} position={"topright"}>
+                    <a onClick={() => { this.setState({ showFilterDialog: true }); }}></a>
+                </MapControlComponent>
+                <MapControlComponent id={style["locate-button"]} position={"topright"}>
+                    <a onClick={() => {
+                        this.mapRef.current.leafletElement.locate({ setView: true, maxZoom: 16 });
+                    }}></a>
+                </MapControlComponent>
+                <AttributionControl prefix='Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a>
+                        from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>'>
+                </AttributionControl>
+                <AttributionControl prefix='<a href="https://leafletjs.com"
+                 title="A JS library for interactive maps">Leaflet</a>'>
+                </AttributionControl>
             </MapNode>
         );
     }

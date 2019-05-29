@@ -8,6 +8,8 @@
 // The code is automated generator
 // https://github.com/NiceLabs/typed-css-modules
 interface ILocals {
+    "control-button": string;
+    "locate-button": string;
     "map": string;
     "yaoling-filter-button": string;
     [name: string]: string;
