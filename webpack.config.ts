@@ -1,4 +1,5 @@
 import TypedCSSModulesPlugin from "@nice-labs/typed-css-modules/dist/extensions/webpack-plugin";
+import * as CopyPlugin from "copy-webpack-plugin";
 import * as HTMLPlugin from "html-webpack-plugin";
 import * as CSSPlugin from "mini-css-extract-plugin";
 import * as path from "path";
@@ -34,7 +35,19 @@ const config: webpack.Configuration = {
             favicon: "./public/favicon.ico",
             manifest: "./public/manifest.json",
             template: "./public/index.html",
+            meta: {
+                "theme-color": "#000000",
+                "viewport": "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
+                "apple-mobile-web-app-capable": "yes",
+                "apple-mobile-web-app-status-bar-style": "black",
+            },
         }),
+        new CopyPlugin([
+            "public/radar-128.png",
+            "public/radar-256.png",
+            "public/radar-512.png",
+            "public/manifest.json",
+          ]),
         new webpack.WatchIgnorePlugin([
             /css\.d\.ts$/,
         ]),
