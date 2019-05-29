@@ -1,0 +1,30 @@
+.toast-entry {
+    animation-duration: 5s;
+    animation-name: fadeOut;
+    margin: 0;
+}
+
+@keyframes fadeOut {
+    0% {opacity: 1;}
+    60% {opacity: 1;}
+    100% {opacity: 0;}
+ }
+
+.toast-messages {
+    position:absolute;
+    background-color: #ffffff8f;
+    z-index: 1000;
+    width: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+    > ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        > li {
+            margin: 4px 0px;
+            text-align: center;
+            font-size: large; 
+        }
+    }
+}
