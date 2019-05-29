@@ -1,11 +1,12 @@
 import * as React from "react";
-import { LayerGroup, LayersControl, Map as MapNode, TileLayer, AttributionControl } from "react-leaflet";
+import { AttributionControl, LayerGroup, LayersControl, Map as MapNode, TileLayer } from "react-leaflet";
 import { connect, DispatchProp } from "react-redux";
 
-import Radar, { SpriteLocation, SpriteResponse } from "@api/Radar";
+import Radar, { DojoLocation, DojoResponse, SpriteLocation, SpriteResponse } from "@api/Radar";
 import { IAppState } from "@reducer/global";
 
 import * as style from "./App.scss";
+import { DojoMarker } from "./Marker/DojoMarker";
 import { SpriteMarker } from "./Marker/SpriteMarker";
 import Dialog from "./Shared/Dialog/Dialog";
 import MapControlComponent from "./Shared/MapControlComponent";
@@ -52,6 +53,7 @@ class App extends React.Component<IProps> {
         lng: defaultPosition[1],
         zoom: 12,
         sprites: [],
+        dojo: [],
         showFilterDialog: false,
     };
 
@@ -63,6 +65,7 @@ class App extends React.Component<IProps> {
     }
 
     public onViewportChanged = (viewport) => {
+        this.mapRef.current.leafletElement.closePopup();
         this.setState(() => {
             return {
                 lat: viewport.center[0],
@@ -100,6 +103,18 @@ class App extends React.Component<IProps> {
         }).catch((e) => {
             console.log(e);
             this.toast.current.addToast(e);
+        });
+        this.radar.fetchDojos(this.state.lat, this.state.lng).then((res: DojoResponse) => {
+            if (res.dojo_list) {
+                this.setState(() => {
+                    return {
+                        dojo: res.dojo_list,
+                    };
+                });
+            }
+        }).catch((e) => {
+            console.log(e);
+            // this.toast.current.addToast(e);
         });
     }
 
@@ -148,13 +163,13 @@ class App extends React.Component<IProps> {
                             {/*))}*/}
                         </LayerGroup>
                     </Overlay>
-                    <Overlay name={"擂台"}>
+                    <Overlay checked name={"擂台"}>
                         <LayerGroup>
-                            {/*{this.state.sprites.filter(()=> true).map((sprite: SpriteLocation) => (*/}
-                            {/*    <SpriteMarker*/}
-                            {/*        key={sprite.gentime + "_" + sprite.latitude + "_" + sprite.longtitude}*/}
-                            {/*        sprite={sprite}/>*/}
-                            {/*))}*/}
+                            {
+                                this.state.dojo.map((dojo: DojoLocation) => (
+                                    <DojoMarker key={ dojo.latitude + "_" + dojo.longtitude} dojo={dojo} />
+                                ))
+                            }
                         </LayerGroup>
                     </Overlay>
                 </LayersControl>
