@@ -6,6 +6,8 @@ import YaolingEntry from "./YaolingEntry";
 
 import { setDisplayedYaolingIDs } from "@action/global";
 
+import * as style from "./YaolingEntry.scss"
+
 const YaolingIDs = Array.from(SpriteConfig.keys());
 
 type IProps = (
@@ -52,7 +54,7 @@ class YaolingFilterList extends React.Component<IProps, { selected: Set<number> 
 
     public render() {
         return <React.Fragment>
-            <ol>
+            <ol className={style.YaolingFilterList}>
                 {
                     YaolingIDs.map(
                         (key) => <YaolingEntry key={key} sprite={SpriteConfig.get(key)}

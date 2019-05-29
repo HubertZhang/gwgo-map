@@ -4,14 +4,33 @@
   margin: 0 auto;
 }
 
-.yaoling-filter-button {
+.control-button {
+  width: 44px;
+  height: 44px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+  background: #fff;
+  border-radius: 5px;
+  a {
     width: 44px;
     height: 44px;
-    border: 2px solid rgba(0, 0, 0, 0.2);
-    background-clip: padding-box;
-    background: #fff;
-    border-radius: 5px;
-    a {
-      background-size: 26px 26px;
-    }
+    background-size: 26px 26px;
+    text-align: center;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    display: block;
   }
+}
+
+.yaoling-filter-button {
+  @extend .control-button;
+  a {
+    background-image: url(./Icons/filter.svg)
+  }
+}
+.locate-button {
+  @extend .control-button;
+  a {
+    background-image: url(./Icons/tracker.svg)
+  }
+}

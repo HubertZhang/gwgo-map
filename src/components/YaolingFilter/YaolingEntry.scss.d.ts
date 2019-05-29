@@ -9,6 +9,7 @@
 // https://github.com/NiceLabs/typed-css-modules
 interface ILocals {
     "YaolingEntry": string;
+    "YaolingFilterList": string;
     "avatar": string;
     "checkbox": string;
     "name": string;
