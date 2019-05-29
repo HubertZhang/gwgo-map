@@ -31,6 +31,9 @@ interface IDojoLocation {
     latitude: number;
     longtitude: number;
     state: number;
+    winner_name: string;
+    winner_fightpower: number;
+    sprite_list: Array<{fightpower: number, level: number, spriteid: number}>;
 }
 
 interface IRadarConfig {
@@ -165,10 +168,16 @@ class Radar {
             longtitude: Math.round(lng * 1E6),
             latitude: Math.round(lat * 1E6),
             platform: 0,
-        }).then((res) => (res as IDojoResponse));
+        }).then((r) => {console.log(r); return r; }).then((res) => (res as IDojoResponse));
     }
 }
 
-export { ISpriteResponse as SpriteResponse, IWSResponse as WSResponse, ISpriteLocation as SpriteLocation };
+export {
+    IWSResponse as WSResponse,
+    ISpriteResponse as SpriteResponse,
+    IDojoResponse as DojoResponse,
+    ISpriteLocation as SpriteLocation,
+    IDojoLocation as DojoLocation,
+};
 
 export default Radar;
