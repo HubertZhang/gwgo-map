@@ -16,7 +16,7 @@ interface ISpriteResponse extends IWSResponse {
 }
 
 interface IDojoResponse extends IWSResponse {
-    dojo_list: [IDojoLocation];
+    dojo_list: [IDojoLocation | IBossLocation];
 }
 
 interface ISpriteLocation {
@@ -33,7 +33,18 @@ interface IDojoLocation {
     state: number;
     winner_name: string;
     winner_fightpower: number;
-    sprite_list: Array<{fightpower: number, level: number, spriteid: number}>;
+    sprite_list: Array<{ fightpower: number, level: number, spriteid: number }>;
+}
+
+interface IBossLocation {
+    latitude: number;
+    longtitude: number;
+    state: number;
+    bossfightpower: number;
+    bossid: number;
+    bosslevel: number;
+    freshtime: number;
+    starlevel: number;
 }
 
 interface IRadarConfig {
@@ -144,6 +155,7 @@ class Radar {
             cfg_type: 1,
             platform: 0,
         }).then((config: IRadarConfig) => {
+            console.log(config);
             if (!config.filename) {
                 throw new Error("no config");
             }
@@ -168,7 +180,7 @@ class Radar {
             longtitude: Math.round(lng * 1E6),
             latitude: Math.round(lat * 1E6),
             platform: 0,
-        }).then((r) => {console.log(r); return r; }).then((res) => (res as IDojoResponse));
+        }).then((r) => { console.log(r); return r; }).then((res) => (res as IDojoResponse));
     }
 }
 
@@ -176,6 +188,7 @@ export {
     IWSResponse as WSResponse,
     ISpriteResponse as SpriteResponse,
     IDojoResponse as DojoResponse,
+    IBossLocation as BossLocation,
     ISpriteLocation as SpriteLocation,
     IDojoLocation as DojoLocation,
 };
