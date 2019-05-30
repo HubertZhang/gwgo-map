@@ -2,11 +2,13 @@ import * as React from "react";
 import { AttributionControl, LayerGroup, LayersControl, Map as MapNode, TileLayer } from "react-leaflet";
 import { connect, DispatchProp } from "react-redux";
 
-import Radar, { DojoLocation, DojoResponse, SpriteLocation, SpriteResponse } from "@api/Radar";
+import Radar, { BossLocation, DojoLocation, DojoResponse, SpriteLocation, SpriteResponse } from "@api/Radar";
 import { IAppState } from "@reducer/global";
 
 import * as style from "./App.scss";
+import { BossMarker } from "./Marker/BossMarker";
 import { DojoMarker } from "./Marker/DojoMarker";
+import { EggMarker } from "./Marker/EggMarker";
 import { SpriteMarker } from "./Marker/SpriteMarker";
 import Dialog from "./Shared/Dialog/Dialog";
 import MapControlComponent from "./Shared/MapControlComponent";
@@ -38,7 +40,7 @@ class App extends React.Component<IProps> {
     }
 
     public refreshConfig = () => {
-        this.radar.fetchConfig().then(this.handleConfig).catch(this.refreshConfig);
+        this.radar.fetchConfig().then(this.handleConfig);
     }
 
     public handleConfig = (config) => {
@@ -126,7 +128,6 @@ class App extends React.Component<IProps> {
                 zoom={12}
                 onViewportChanged={this.onViewportChanged}
                 attributionControl={false}
-            // onClick={this.forceRequest}
             >
                 <ToastMessages ref={this.toast}></ToastMessages>
                 <Dialog title={"选择显示的妖灵"} hidden={!this.state.showFilterDialog}
@@ -154,19 +155,23 @@ class App extends React.Component<IProps> {
                                 ))}
                         </LayerGroup>
                     </Overlay>
-                    <Overlay name={"神石"}>
+                    <Overlay checked name={"神石"}>
                         <LayerGroup>
-                            {/*{this.state.sprites.filter(()=> true).map((sprite: SpriteLocation) => (*/}
-                            {/*    <SpriteMarker*/}
-                            {/*        key={sprite.gentime + "_" + sprite.latitude + "_" + sprite.longtitude}*/}
-                            {/*        sprite={sprite}/>*/}
-                            {/*))}*/}
+                            {
+                                this.state.dojo.map((boss: BossLocation) => {
+                                    if (boss.state === 1) {
+                                        return <EggMarker key={ boss.latitude + "_" + boss.longtitude} boss={boss} />;
+                                    } else if (boss.state === 2) {
+                                        return <BossMarker key={ boss.latitude + "_" + boss.longtitude} boss={boss} />;
+                                    }
+                                })}
+
                         </LayerGroup>
                     </Overlay>
                     <Overlay checked name={"擂台"}>
                         <LayerGroup>
                             {
-                                this.state.dojo.map((dojo: DojoLocation) => (
+                                this.state.dojo.filter((d) => (d.state === 0)).map((dojo: DojoLocation) => (
                                     <DojoMarker key={ dojo.latitude + "_" + dojo.longtitude} dojo={dojo} />
                                 ))
                             }
