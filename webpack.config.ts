@@ -47,6 +47,7 @@ const config: webpack.Configuration = {
             "public/radar-256.png",
             "public/radar-512.png",
             "public/manifest.json",
+            {from: "src/serviceWorker.js", to: "service-worker.js"},
           ]),
         new webpack.WatchIgnorePlugin([
             /css\.d\.ts$/,
