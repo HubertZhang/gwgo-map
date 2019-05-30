@@ -5,7 +5,7 @@ import * as React from "react";
 import { Marker, Popup } from "react-leaflet";
 import * as style from "./DojoMarker.scss";
 
-const leitai = require("./leitai.png");
+const leitai = require("./Images/leitai.png");
 
 const SpritePower = ({ dojo_sprite }: { dojo_sprite: { fightpower: number, level: number, spriteid: number } }) => (
     <div>
@@ -18,7 +18,7 @@ const SpritePower = ({ dojo_sprite }: { dojo_sprite: { fightpower: number, level
 
 export const DojoMarker = ({ dojo }: { dojo: DojoLocation }) => (
     <Marker position={{ lat: dojo.latitude / 1e6, lng: dojo.longtitude / 1e6 }}
-        icon={icon({ iconUrl: "/" + leitai, iconSize: [32, 32] })}>
+        icon={icon({ iconUrl: leitai, iconSize: [32, 32] })}>
         <Popup>
             <div className={style.popup}>
                 <div className={style.owner}>
