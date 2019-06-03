@@ -5,17 +5,23 @@ import * as CSSPlugin from "mini-css-extract-plugin";
 import * as path from "path";
 import PathsPlugin from "tsconfig-paths-webpack-plugin";
 import * as webpack from "webpack";
+import {GenerateSW} from "workbox-webpack-plugin";
 import * as loaders from "./loaders";
 
 const config: webpack.Configuration = {
-    entry: "./src/index.tsx",
+    entry: {
+        main: "./src/index.tsx",
+    },
     output: {
         path: path.join(__dirname, "/dist"),
-        filename: "bundle.min.js",
+        filename: "[name].min.js",
     },
     resolve: {
         extensions: [".ts", ".tsx", ".js"],
         plugins: [new PathsPlugin()],
+    },
+    externals : {
+        leaflet: "L",
     },
     module: {
         rules: [
@@ -47,8 +53,7 @@ const config: webpack.Configuration = {
             "public/radar-256.png",
             "public/radar-512.png",
             "public/manifest.json",
-            {from: "src/serviceWorker.js", to: "service-worker.js"},
-          ]),
+        ]),
         new webpack.WatchIgnorePlugin([
             /css\.d\.ts$/,
         ]),
@@ -57,7 +62,13 @@ const config: webpack.Configuration = {
             camelCase: false, // boolean (default is false)
             filesPattern: "./src/**/*.scss", // string | string[] (default is "./src/**/*.css")
         }),
+        new GenerateSW(),
     ],
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
+    },
 };
 
 export default config;
