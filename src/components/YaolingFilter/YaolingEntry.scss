@@ -28,4 +28,20 @@
 
 .YaolingFilterList {
   padding: 0 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.YaolingFilterButtons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  height: 40px;
+
+  div {
+    flex-grow: 1;
+    text-align: center;
+    border-width: 2px;
+    border-color: #000000;
+    border-style: solid;
+  }
 }

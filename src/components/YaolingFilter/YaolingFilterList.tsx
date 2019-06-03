@@ -1,12 +1,12 @@
 import * as React from "react";
 
-import { SpriteConfig } from "@config/SpriteData";
+import { CommonSpriteID, SpriteConfig } from "@config/SpriteData";
 import { connect, DispatchProp } from "react-redux";
 import YaolingEntry from "./YaolingEntry";
 
 import { setDisplayedYaolingIDs } from "@action/global";
 
-import * as style from "./YaolingEntry.scss"
+import * as style from "./YaolingEntry.scss";
 
 const YaolingIDs = Array.from(SpriteConfig.keys());
 
@@ -52,9 +52,36 @@ class YaolingFilterList extends React.Component<IProps, { selected: Set<number> 
         console.log("filter updated");
     }
 
+    public displayAll = () => {
+        this.setState({
+            selected: new Set<number>(SpriteConfig.keys()),
+        });
+    }
+
+    public hideAll = () => {
+        this.setState({
+            selected: new Set<number>(),
+        });
+    }
+
+    public hideCommon = () => {
+        const n = new Set<number>(this.state.selected);
+        for (const id of CommonSpriteID) {
+            n.delete(id);
+        }
+        this.setState({
+            selected: n,
+        });
+    }
+
     public render() {
         return <React.Fragment>
             <ol className={style.YaolingFilterList}>
+                <div className={style.YaolingFilterButtons}>
+                    <div onClick={this.displayAll}>全部显示</div>
+                    <div onClick={this.hideAll}>全部隐藏</div>
+                    <div onClick={this.hideCommon}>隐藏常见妖灵</div>
+                </div>
                 {
                     YaolingIDs.map(
                         (key) => <YaolingEntry key={key} sprite={SpriteConfig.get(key)}
@@ -63,6 +90,7 @@ class YaolingFilterList extends React.Component<IProps, { selected: Set<number> 
                     )
                 }
             </ol>
+
         </React.Fragment>;
     }
 }
