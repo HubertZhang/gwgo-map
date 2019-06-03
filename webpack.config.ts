@@ -13,7 +13,7 @@ const config: webpack.Configuration = {
         main: "./src/index.tsx",
     },
     output: {
-        path: path.join(__dirname, "/dist"),
+        path: path.join(__dirname, "/build"),
         filename: "[name].min.js",
     },
     resolve: {
@@ -66,7 +66,7 @@ const config: webpack.Configuration = {
     ],
     optimization: {
         splitChunks: {
-            chunks: 'all',
+            chunks: "all",
         },
     },
 };
