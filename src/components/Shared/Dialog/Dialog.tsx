@@ -21,7 +21,7 @@ class Dialog extends React.PureComponent<IProps> {
                 <section className={classNames(style.dialog, this.props.className)}>
                     <header>
                         <h1 className={style.title}>{this.props.title!}</h1>
-                        <div className={style.close}><a onClick={() => { this.props.onClosed(); }}>X</a></div>
+                        <div className={style.close} onClick={() => { this.props.onClosed(); }}>×</div>
                     </header>
                     <div className={style.content}>{this.props.children}</div>
                 </section>
