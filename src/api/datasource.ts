@@ -45,11 +45,9 @@ export class SpriteDataSource {
                     this.yaolingRange = { minLat, maxLat, minLng, maxLng };
                     this.yaolings = res.sprite_list;
                     return this.yaolings;
+                } else {
+                    Promise.reject("Error Data");
                 }
-
-            }).catch((e) => {
-                console.log(e);
-                Promise.reject(e);
             });
         }
 
@@ -82,11 +80,10 @@ export class SpriteDataSource {
                     this.dojoRange = { minLat, maxLat, minLng, maxLng };
                     this.dojos = res.dojo_list;
                     return this.dojos;
+                } else {
+                    Promise.reject("Error Data");
                 }
 
-            }).catch((e) => {
-                console.log(e);
-                Promise.reject(e);
             });
         }
         return this.dojos;

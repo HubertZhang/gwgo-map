@@ -1,4 +1,4 @@
-import { IHideYaoling, IShowYaoling, ISetDisplayedYaoling, IResetDisplayedYaoling } from "./filterYaoling";
+import { IHideYaoling, IResetDisplayedYaoling, ISetDisplayedYaoling, IShowYaoling } from "./filterYaoling";
 
 export function hideYaoling(id: number): IHideYaoling {
     return { type: "HideYaoling", id };

@@ -4,6 +4,7 @@ import { icon } from "leaflet";
 import * as React from "react";
 import { Marker, Popup } from "react-leaflet";
 
+// tslint:disable: no-var-requires
 const egg1 = require("./Images/egg1.png");
 const egg2 = require("./Images/egg2.png");
 const egg3 = require("./Images/egg3.png");

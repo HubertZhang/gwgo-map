@@ -16,6 +16,7 @@
     "allowSyntheticDefaultImports": false,
     "jsx": "react",
     "allowJs": true,
+    "outDir": "./built",
     "baseUrl": "src",
     "paths": {
       "*": [
