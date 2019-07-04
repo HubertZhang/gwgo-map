@@ -13,11 +13,45 @@ export interface ISpriteData {
     Level: number;
 }
 
-export const SpriteConfig = new Map<number, ISpriteData>();
+class SpriteData {
+    private spriteData: Map<number, ISpriteData>;
 
-config.Data.forEach((data) => {
-    SpriteConfig.set(data.Id, data as ISpriteData);
-});
+    constructor() {
+        this.spriteData = new Map<number, ISpriteData>();
+        config.Data.forEach((data) => {
+            this.spriteData.set(data.Id, data as ISpriteData);
+        });
+    }
+
+    public get(id: number): ISpriteData {
+        let data = this.spriteData.get(id);
+        if (data == null) {
+            console.log("Unknown ID: ", id);
+            const temp = this.spriteData.get((id % 100000) + 2000000);
+            if (temp != null) {
+                data = { ...temp, Name: temp.Name + " - 变异种" };
+            } else {
+                data = {
+                    Id: id,
+                    Name: "未知",
+                    FiveEle: [],
+                    PrefabName: "0_Unknown",
+                    ImgName: "0",
+                    BigImgPath: "512_body/1_GanJiang_big.png",
+                    SmallImgPath: "128_head/1_GanJiang_head.png",
+                    Level: 0,
+                };
+            }
+        }
+        return data;
+    }
+
+    public keys() {
+        return this.spriteData.keys();
+    }
+}
+
+export const SpriteConfig = new SpriteData();
 
 export const CommonSpriteID = [2000001, 2000004, 2000013, 2000022, 2000025,
     2000034, 2000037, 2000046, 2000055, 2000061, 2000075, 2000103, 2000156,
