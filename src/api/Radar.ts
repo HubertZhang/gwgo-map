@@ -69,7 +69,7 @@ class Radar {
     }
 
     public initSocket() {
-        this.connection = new WebSocket("wss://publicld.gwgo.qq.com?account_value=0&account_type=0&appid=0&token=0");
+        this.connection = new WebSocket("wss://publicld.gwgo.qq.com?account_value=0&account_type=1&appid=0&token=0");
         // this._connection.open();
         this.connection.onopen = this._onSocketOpen.bind(this);
         this.connection.onerror = this._onSocketError.bind(this);
@@ -180,7 +180,7 @@ class Radar {
             longtitude: Math.round(lng * 1E6),
             latitude: Math.round(lat * 1E6),
             platform: 0,
-        }).then((r) => { console.log(r); return r; }).then((res) => (res as IDojoResponse));
+        }).then((res) => (res as IDojoResponse));
     }
 }
 

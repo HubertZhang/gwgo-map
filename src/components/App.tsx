@@ -5,6 +5,7 @@ import { connect, DispatchProp } from "react-redux";
 import Radar, { BossLocation, DojoLocation, DojoResponse, SpriteLocation, SpriteResponse } from "@api/Radar";
 import { IAppState } from "@reducer/global";
 
+import { SpriteDataSource } from "@api/datasource";
 import * as style from "./App.scss";
 import { BossMarker } from "./Marker/BossMarker";
 import { DojoMarker } from "./Marker/DojoMarker";
@@ -25,26 +26,18 @@ type IProps = (
 );
 
 class App extends React.Component<IProps> {
-    private radar: Radar;
+    private dataSource: SpriteDataSource;
 
     constructor(props) {
         super(props);
     }
 
     public componentDidMount(): void {
-        this.radar = new Radar();
+        this.dataSource = new SpriteDataSource();
         // this.refreshConfig()
         if (this.mapRef.current) {
             this.mapRef.current.leafletElement.on("click", this.forceRequest);
         }
-    }
-
-    public refreshConfig = () => {
-        this.radar.fetchConfig().then(this.handleConfig);
-    }
-
-    public handleConfig = (config) => {
-        console.log(config);
     }
 
     public mapRef = React.createRef<MapNode>();
@@ -81,39 +74,23 @@ class App extends React.Component<IProps> {
         if (this.state.zoom < 14) {
             return;
         }
-        this.radar.fetchYaolings(this.state.lat, this.state.lng).then((res: SpriteResponse) => {
-            // let minLat = Number.MAX_VALUE;
-            // let maxLat = 0;
-            // let minLng = Number.MAX_VALUE;
-            // let maxLng = 0;
-            // for (const s of res.sprite_list) {
-            //     minLat = Math.min(minLat, s.latitude);
-            //     maxLat = Math.max(maxLat, s.latitude);
-            //     minLng = Math.min(minLng, s.longtitude);
-            //     maxLng = Math.max(maxLng, s.longtitude);
-            // }
-            // console.log(maxLat - this.state.lat * 1e6, this.state.lat * 1e6 - minLat);
-            // console.log(maxLng - this.state.lng * 1e6, this.state.lng * 1e6 - minLng);
-            if (res.sprite_list) {
-                this.setState(() => {
-                    return {
-                        sprites: res.sprite_list,
-                    };
-                });
-            }
+        this.dataSource.fetchYaolingByCenter(this.state.lat, this.state.lng).then((res) => {
+            this.setState(() => {
+                return {
+                    sprites: res,
+                };
+            });
 
         }).catch((e) => {
             console.log(e);
             this.toast.current.addToast(e);
         });
-        this.radar.fetchDojos(this.state.lat, this.state.lng).then((res: DojoResponse) => {
-            if (res.dojo_list) {
-                this.setState(() => {
-                    return {
-                        dojo: res.dojo_list,
-                    };
-                });
-            }
+        this.dataSource.fetchDojoByCenter(this.state.lat, this.state.lng).then((res) => {
+            this.setState(() => {
+                return {
+                    dojo: res,
+                };
+            });
         }).catch((e) => {
             console.log(e);
             // this.toast.current.addToast(e);
