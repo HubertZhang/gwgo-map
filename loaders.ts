@@ -5,6 +5,7 @@ export const CSSLoader = {
     loader: require.resolve("css-loader"),
     options: {
         modules: true,
+        localIdentName: "[local]",
     },
 };
 

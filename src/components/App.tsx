@@ -2,10 +2,11 @@ import * as React from "react";
 import { AttributionControl, LayerGroup, LayersControl, Map as MapNode, TileLayer } from "react-leaflet";
 import { connect, DispatchProp } from "react-redux";
 
-import Radar, { BossLocation, DojoLocation, DojoResponse, SpriteLocation, SpriteResponse } from "@api/Radar";
+import { BossLocation, DojoLocation, SpriteLocation } from "@api/Radar";
 import { IAppState } from "@reducer/global";
 
 import { SpriteDataSource } from "@api/datasource";
+import { Slide, toast, ToastContainer } from "react-toastify";
 import * as style from "./App.scss";
 import { BossMarker } from "./Marker/BossMarker";
 import { DojoMarker } from "./Marker/DojoMarker";
@@ -13,8 +14,9 @@ import { EggMarker } from "./Marker/EggMarker";
 import { SpriteMarker } from "./Marker/SpriteMarker";
 import Dialog from "./Shared/Dialog/Dialog";
 import MapControlComponent from "./Shared/MapControlComponent";
-import { ToastMessages } from "./Toast/ToastMessages";
 import YaolingFilterList from "./YaolingFilter/YaolingFilterList";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const { BaseLayer, Overlay } = LayersControl;
 
@@ -41,7 +43,6 @@ class App extends React.Component<IProps> {
     }
 
     public mapRef = React.createRef<MapNode>();
-    public toast = React.createRef<ToastMessages>();
 
     public state = {
         lat: defaultPosition[0],
@@ -82,8 +83,7 @@ class App extends React.Component<IProps> {
             });
 
         }).catch((e) => {
-            console.log(e);
-            this.toast.current.addToast(e);
+            toast("Error when load yaolings: " + e.toString());
         });
         this.dataSource.fetchDojoByCenter(this.state.lat, this.state.lng).then((res) => {
             this.setState(() => {
@@ -92,8 +92,7 @@ class App extends React.Component<IProps> {
                 };
             });
         }).catch((e) => {
-            console.log(e);
-            // this.toast.current.addToast(e);
+            toast("Error when load dojos: " + e.toString());
         });
     }
 
@@ -106,7 +105,14 @@ class App extends React.Component<IProps> {
                 onViewportChanged={this.onViewportChanged}
                 attributionControl={false}
             >
-                <ToastMessages ref={this.toast}></ToastMessages>
+                <ToastContainer
+                    position="top-left"
+                    transition={Slide}
+                    autoClose={2000}
+                    hideProgressBar
+                    newestOnTop
+                    draggable={false}
+                />
                 <Dialog title={"选择显示的妖灵"} hidden={!this.state.showFilterDialog}
                     onClosed={() => { this.setState({ showFilterDialog: false }); }}>
                     <YaolingFilterList></YaolingFilterList>
