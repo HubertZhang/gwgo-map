@@ -8,8 +8,7 @@
     "esModuleInterop": false,
     "target": "es6",
     "lib": [
-      "es2015",
-      "es2017",
+      "esnext",
       "dom"
     ],
     "removeComments": true,
