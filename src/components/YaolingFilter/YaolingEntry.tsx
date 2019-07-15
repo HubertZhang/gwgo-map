@@ -1,14 +1,25 @@
 import { ISpriteData, Prefix } from "@config/SpriteData";
+import classnames from "classnames";
 import * as React from "react";
 import * as style from "./YaolingEntry.scss";
 
-export default class YaolingEntry extends React.Component<{ sprite: ISpriteData, checked: boolean, onClick: any }> {
+interface IYaolingEntry {
+    sprite: ISpriteData;
+    checked: boolean;
+    onClick: any;
+}
+
+export default class YaolingEntry extends React.Component<IYaolingEntry> {
     public render() {
         const { sprite, checked, onClick } = this.props;
-        return <li className={style.YaolingEntry} key={sprite.Id} onClick={() => onClick(sprite.Id)} >
-                <img className={style.avatar} src={Prefix + sprite.SmallImgPath} />
-                <p className={style.name}>{sprite.Name}</p>
-                <p className={style.checkbox} hidden={!checked}>✔️</p>
-        </li>;
+        return <div
+            className={classnames({ [style.YaolingEntry]: true, [style.checked]: checked })}
+            key={sprite.Id}
+            onClick={() => onClick(sprite.Id)}
+        >
+            <img className={style.avatar} src={Prefix + sprite.SmallImgPath} />
+            <p className={style.name}>{sprite.Name}</p>
+            <p className={style.checkbox} hidden={!checked}>✔️</p>
+        </div>;
     }
 }

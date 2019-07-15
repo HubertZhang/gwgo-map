@@ -10,9 +10,9 @@
 interface ILocals {
     "YaolingEntry": string;
     "YaolingFilterButtons": string;
-    "YaolingFilterList": string;
+    "YaolingGrid": string;
     "avatar": string;
-    "checkbox": string;
+    "checked": string;
     "name": string;
     [name: string]: string;
 }

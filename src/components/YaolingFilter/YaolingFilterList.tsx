@@ -75,21 +75,29 @@ class YaolingFilterList extends React.Component<IProps, { selected: Set<number> 
     }
 
     public render() {
+        const IDs = YaolingIDs.flatMap((key, index, ids) => {
+            if (SpriteConfig.get(ids[index - 1]).Level > SpriteConfig.get(key).Level) {
+                return [-1, key];
+            } else {
+                return [key];
+            }
+        });
         return <React.Fragment>
-            <ol className={style.YaolingFilterList}>
-                <div className={style.YaolingFilterButtons}>
-                    <div onClick={this.displayAll}>全部显示</div>
-                    <div onClick={this.hideAll}>全部隐藏</div>
-                    <div onClick={this.hideCommon}>隐藏常见妖灵</div>
-                </div>
+            <div className={style.YaolingFilterButtons}>
+                <div onClick={this.displayAll}>全部显示</div>
+                <div onClick={this.hideAll}>全部隐藏</div>
+                <div onClick={this.hideCommon}>隐藏常见妖灵</div>
+            </div>
+            <div className={style.YaolingGrid}>
                 {
-                    YaolingIDs.map(
-                        (key) => <YaolingEntry key={key} sprite={SpriteConfig.get(key)}
-                            checked={this.state.selected.has(key)}
-                            onClick={this.yaolingClicked} />,
+                    IDs.map(
+                        (key, index) => key === -1 ? <br key={index} /> :
+                            <YaolingEntry key={key} sprite={SpriteConfig.get(key)}
+                                checked={this.state.selected.has(key)}
+                                onClick={this.yaolingClicked} />,
                     )
                 }
-            </ol>
+            </div>
 
         </React.Fragment>;
     }
