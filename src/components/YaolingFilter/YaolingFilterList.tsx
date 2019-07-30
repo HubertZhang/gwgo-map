@@ -76,7 +76,7 @@ class YaolingFilterList extends React.Component<IProps, { selected: Set<number> 
 
     public render() {
         const IDs = YaolingIDs.flatMap((key, index, ids) => {
-            if (SpriteConfig.get(ids[index - 1]).Level > SpriteConfig.get(key).Level) {
+            if (index > 0 && SpriteConfig.get(ids[index - 1]).Level > SpriteConfig.get(key).Level) {
                 return [-1, key];
             } else {
                 return [key];
