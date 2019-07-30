@@ -17,6 +17,7 @@ export class SpriteDataSource {
 
     constructor() {
         this.radar = new Radar();
+        // this.radar.fetchConfig().then(console.log);
     }
 
     /**

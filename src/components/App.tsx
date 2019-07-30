@@ -16,7 +16,9 @@ import Dialog from "./Shared/Dialog/Dialog";
 import MapControlComponent from "./Shared/MapControlComponent";
 import YaolingFilterList from "./YaolingFilter/YaolingFilterList";
 
+import { viewportChanged } from "@action/global";
 import "react-toastify/dist/ReactToastify.css";
+import { store } from "../store";
 
 const { BaseLayer, Overlay } = LayersControl;
 
@@ -36,7 +38,6 @@ class App extends React.Component<IProps> {
 
     public componentDidMount(): void {
         this.dataSource = new SpriteDataSource();
-        // this.refreshConfig()
         if (this.mapRef.current) {
             this.mapRef.current.leafletElement.on("click", this.forceRequest);
         }
@@ -61,6 +62,7 @@ class App extends React.Component<IProps> {
     }
 
     public onViewportChanged = (viewport) => {
+        this.props.dispatch(viewportChanged(viewport));
         this.mapRef.current.leafletElement.closePopup();
         this.setState(() => {
             return {
@@ -100,8 +102,8 @@ class App extends React.Component<IProps> {
         return (
             <MapNode className={style.map}
                 ref={this.mapRef}
-                center={defaultPosition}
-                zoom={12}
+                center={store.getState().mapData.viewport.center}
+                zoom={store.getState().mapData.viewport.zoom}
                 onViewportChanged={this.onViewportChanged}
                 attributionControl={false}
             >
