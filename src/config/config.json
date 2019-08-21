@@ -2162,18 +2162,6 @@
       "Level": 1
     },
     {
-      "Id": 2000273,
-      "Name": "陆无名",
-      "FiveEle": [
-        "雷"
-      ],
-      "PrefabName": "273_LuPanGuan",
-      "ImgName": "273",
-      "BigImgPath": "512_body/273_LuPanGuan_big.png",
-      "SmallImgPath": "128_head/273_LuPanGuan_head.png",
-      "Level": 3
-    },
-    {
       "Id": 2000277,
       "Name": "游灵",
       "FiveEle": [
@@ -2184,6 +2172,18 @@
       "BigImgPath": "512_body/277_YouLing_big.png",
       "SmallImgPath": "128_head/277_YouLing_head.png",
       "Level": 2
+    },
+    {
+      "Id": 2000273,
+      "Name": "陆无名",
+      "FiveEle": [
+        "雷"
+      ],
+      "PrefabName": "273_LuPanGuan",
+      "ImgName": "273",
+      "BigImgPath": "512_body/273_LuPanGuan_big.png",
+      "SmallImgPath": "128_head/273_LuPanGuan_head.png",
+      "Level": 3
     },
     {
       "Id": 2000279,
@@ -3356,6 +3356,66 @@
       "ImgName": "226",
       "BigImgPath": "512_body/226_YuShi_big.png",
       "SmallImgPath": "128_head/226_YuShi_head.png",
+      "Level": 3
+    },
+    {
+      "Id": 2004040,
+      "Name": "柠檬精",
+      "FiveEle": [
+        "无"
+      ],
+      "PrefabName": "4040_NingMeng",
+      "ImgName": "4040",
+      "BigImgPath": "512_body/4040_NingMeng_big.png",
+      "SmallImgPath": "128_head/4040_NingMeng_head.png",
+      "Level": 1
+    },
+    {
+      "Id": 2004041,
+      "Name": "复读鸡",
+      "FiveEle": [
+        "无"
+      ],
+      "PrefabName": "4040_NingMeng",
+      "ImgName": "4041",
+      "BigImgPath": "512_body/4041_FuDuJi_big.png",
+      "SmallImgPath": "128_head/4041_FuDuJi_head.png",
+      "Level": 1
+    },
+    {
+      "Id": 2004042,
+      "Name": "鸽了",
+      "FiveEle": [
+        "无"
+      ],
+      "PrefabName": "4040_NingMeng",
+      "ImgName": "4042",
+      "BigImgPath": "512_body/4042_GeZi_big.png",
+      "SmallImgPath": "128_head/4042_GeZi_head.png",
+      "Level": 1
+    },
+    {
+      "Id": 2004043,
+      "Name": "真香",
+      "FiveEle": [
+        "无"
+      ],
+      "PrefabName": "4040_NingMeng",
+      "ImgName": "4043",
+      "BigImgPath": "512_body/4043_ZhenXiang_big.png",
+      "SmallImgPath": "128_head/4043_ZhenXiang_head.png",
+      "Level": 1
+    },
+    {
+      "Id": 2004044,
+      "Name": "全员恶人",
+      "FiveEle": [
+        "空"
+      ],
+      "PrefabName": "4040_NingMeng",
+      "ImgName": "4044",
+      "BigImgPath": "512_body/4044_QuanYuanERen_big.png",
+      "SmallImgPath": "128_head/4044_QuanYuanERen_head.png",
       "Level": 3
     },
     {
